@@ -113,7 +113,8 @@ func apply(delMode bool) {
 }
 
 // Execute executes the root command.
-func Execute() error {
+func Execute(v string) error {
+	version = v
 	return rootCmd.Execute()
 }
 
