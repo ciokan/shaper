@@ -15,6 +15,6 @@ gorelease:
 	docker run --rm --privileged \
 		-v ${PWD}:/go/src/github.com/ciokan/shaper \
 		-v /var/run/docker.sock:/var/run/docker.sock \
-		-w /go/src/github.com/dnsadblock/proxy \
+		-w /go/src/github.com/ciokan/shaper \
 		--env-file .env \
 		goreleaser/goreleaser release --rm-dist --snapshot --skip-publish
