@@ -18,6 +18,10 @@ The possible applied penalties are:
 - drop the connection
 - limit bandwidth
 
+### Install
+
+`sh -c 'sh -c "$(curl -sL https://raw.githubusercontent.com/ciokan/shaper/master/install.sh)"'`
+
 ### Usage
 
 __Scenario__: Identify users that have more than 100 connections open and
