@@ -38,12 +38,54 @@ with mbit: 100:200 = 10mbit:1mbit
 To see a list of existing jails (and thier identifiers)
 execute "jail list"`
 	
-	GCmdApplyShort     = "Applies configuration script"
+	GCmdRootShort      = "Applies QOS commands to host"
+	GCmdApplyShort     = "Executes configuration script"
+	GCmdResetShort     = "Removes/reverts executed script"
 	GCmdJailShort      = "Manages jails"
 	GCmdJailDelShort   = "Deletes jail"
 	GCmdJailAddShort   = "Creates a jail for criminals"
 	GCmdJailsListShort = "Lists all jails in database"
 	GCmdInspectShort   = "Will print the current script"
+	
+	GCmdRootLong = `
+WARNING:
+| Alpha state: please play at your own risk. Using this
+| application currently presumes you have good knowledge of
+| "tc" and "iptables". The application might apply bad/wrong
+| commands that have the potential of cutting down internet
+| for you or your users.
+
+Program that allows you to define various QOS programs in order
+to control and punish abusers. It operates on a "match <and>
+penalty" basis where a "match" is a set of parameters that will
+help us identify abusers. Once identified, abusers will be
+punished using the specified penalty.
+
+Currently supported match types:
+    - based on consumed bandwidth
+    - based on the number of TCP connections
+
+Currently supported penalty types:
+    - limits/constraints bandwidth
+    - drops the connection
+    - (WIP): adds latency
+
+The program is built in such a way that allows you to "load"
+jails (restrictions) without actually applying them. Once
+loaded, the jails can be inspected using the "inspect"
+command.
+
+Once satisfied with the results you can call "apply" to
+execute them against the current machine.
+
+To revert and return to a clean state you can call "reset"
+which will try to delete any of the rules it previously
+excecuted by using the "apply" command
+
+For more commands and guides please make use of the "-h"
+or "--help" shortcuts on this executable or the commands
+it lists.
+`
 	
 	GCmdApplyLong = `
 This command will apply all iptables and traffic control rules.
@@ -56,6 +98,12 @@ aplying anything checkout the "inspect" command.
 This project is in a very early stage so we might break some
 things on certain systems. Play safe and smart - you have been
 warned!
+`
+	
+	GCmdResetLong = `
+This command will reset/revert the changes made to your system
+by the execution of any of the previously called "apply"
+command
 `
 	
 	GCmdInspectLong = `

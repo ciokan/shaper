@@ -24,8 +24,8 @@ var (
 	db      *database
 	rootCmd = &cobra.Command{
 		Use:   "",
-		Short: "Short",
-		Long:  `Long`,
+		Short: GCmdRootShort,
+		Long:  GCmdRootLong,
 		Run: func(cmd *cobra.Command, args []string) {
 			fmt.Println("root", args)
 		},
@@ -36,26 +36,16 @@ var (
 		Short: GCmdApplyShort,
 		Long:  GCmdApplyLong,
 		Run: func(cmd *cobra.Command, args []string) {
-			sudo, err := isSudo()
-			checkErr(err)
-			if sudo == false {
-				checkErr(errors.New("this command requires sudo privileges"))
-			}
-			s := shaper.New()
-			for _, j := range db.Jails {
-				jJail, err := j.toJailObj()
-				checkErr(err)
-				checkErr(s.AddJail(jJail))
-			}
-			cfg, err := s.Config(false)
-			checkErr(err)
-			checkErr(ioutil.WriteFile(ScriptFile, []byte(cfg), 0))
-			checkErr(os.Chmod(ScriptFile, 0700))
-			defer checkErr(os.Remove(ScriptFile))
-			c := exec.Command("sh", ScriptFile)
-			out, err := c.CombinedOutput()
-			checkErr(err)
-			fmt.Println(strings.TrimSpace(string(out)))
+			apply(false)
+		},
+	}
+	
+	resetCmd = &cobra.Command{
+		Use:   "reset",
+		Short: GCmdResetShort,
+		Long:  GCmdResetLong,
+		Run: func(cmd *cobra.Command, args []string) {
+			apply(false)
 		},
 	}
 	
@@ -77,6 +67,29 @@ var (
 	}
 )
 
+func apply(delMode bool) {
+	sudo, err := isSudo()
+	checkErr(err)
+	if sudo == false {
+		checkErr(errors.New("this command requires sudo privileges"))
+	}
+	s := shaper.New()
+	for _, j := range db.Jails {
+		jJail, err := j.toJailObj()
+		checkErr(err)
+		checkErr(s.AddJail(jJail))
+	}
+	cfg, err := s.Config(delMode)
+	checkErr(err)
+	checkErr(ioutil.WriteFile(ScriptFile, []byte(cfg), 0))
+	checkErr(os.Chmod(ScriptFile, 0700))
+	defer checkErr(os.Remove(ScriptFile))
+	c := exec.Command("sh", ScriptFile)
+	out, err := c.CombinedOutput()
+	checkErr(err)
+	fmt.Println(strings.TrimSpace(string(out)))
+}
+
 // Execute executes the root command.
 func Execute() error {
 	return rootCmd.Execute()
@@ -89,8 +102,9 @@ func init() {
 	})
 	
 	rootCmd.AddCommand(jailCmd)
-	rootCmd.AddCommand(applyCmd)
 	rootCmd.AddCommand(inspectCmd)
+	rootCmd.AddCommand(applyCmd)
+	rootCmd.AddCommand(resetCmd)
 }
 
 func checkErr(err error) {
