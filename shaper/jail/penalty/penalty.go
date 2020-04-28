@@ -49,6 +49,9 @@ type BwTcCmdParams struct {
 func (b Bandwidth) TcCommands(p BwTcCmdParams) ([]string, []string, []string, error) {
 	p.Rate = b.Rate
 	p.Ceil = b.Ceil
+	if p.Rate == 0 {
+		p.Rate = p.Ceil
+	}
 	if p.Ceil == 0 {
 		p.Ceil = p.Rate
 	}
