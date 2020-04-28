@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.1](https://github.com/ciokan/shaper/compare/v1.2.0...v1.2.1) (2020-04-28)
+
+
+### Bug Fixes
+
+* version was not picked up ([fa31a57](https://github.com/ciokan/shaper/commit/fa31a57875695c186b5965979e07311e08b7058f))
+
 ## [1.2.0](https://github.com/ciokan/shaper/compare/v1.1.2...v1.2.0) (2020-04-28)
 
 
