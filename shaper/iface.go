@@ -63,6 +63,17 @@ func (i *Iface) validateJail(j jail.Jail) error {
 	if j.GetMatch().Type() == match.FloorCeilType {
 		return i.validateMatchFloorCeil(j)
 	}
+	if j.GetPenalty().Type() == penalty.BandwidthType {
+		return i.validatePenaltyBandwidth(j)
+	}
+	return nil
+}
+
+func (i *Iface) validatePenaltyBandwidth(j jail.Jail) error {
+	newPenalty := j.GetPenalty().(penalty.Bandwidth)
+	if newPenalty.Rate == 0 && newPenalty.Ceil == 0 {
+		return fmt.Errorf("a rate or ceil value is mandatory on this penalty type")
+	}
 	return nil
 }
 
