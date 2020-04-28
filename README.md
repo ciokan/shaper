@@ -23,11 +23,31 @@ The possible applied penalties are:
 __Scenario__: Identify users that have more than 100 connections open and
 place them into a jail (bucket) where internet speed is capped at `1mbit`:
 
-`./shaper jail add --match-connections=100: --penalty-bandwidth=10`
+`./shaper jail add --match-connections=100: --penalty-bandwidth=1`
 
 __Scenario__: Identify users that have more than 100 connections open and
 drop any other connection above that limit:
 
 `./shaper jail add --match-connections=100: --penalty-drop`
 
-__Scenario__: Identify users consuming more than 
+__Scenario__: Identify users performing downloads that have exceeded 10Mb in
+ size and place them into a jail (bucket) where internet speed is capped at
+  `1mbit`:
+  
+`./shaper jail add --match-size=10000000: --penalty-bandwidth=1`
+
+__Scenario__: Identify users performing downloads that have exceeded 10Mb in
+ size and drop their connections:
+ 
+`./shaper jail add --match-size=10000000: --penalty-drop`
+
+### Good to know
+
+All values for bandwidth related matches or penalties are translated in `mbit
+`. If you specify a `10` it means `10mbit`
+
+The executable has `-h` help commands for every instruction so make sure to
+check it out.
+ 
+No command is executed unless you call `apply`. This is to allow you to inspect
+(using `inspect`) what is about to be executed and make sure it looks ok.

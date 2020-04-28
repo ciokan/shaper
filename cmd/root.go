@@ -75,7 +75,15 @@ func apply(delMode bool) {
 	}
 	s := shaper.New()
 	for i, j := range db.Jails {
-		db.Jails[i].Applied = true
+		// do not apply if already applied and we're not deleting
+		if j.Applied && delMode == false {
+			continue
+		}
+		// do not delete if it's not applied (nothing to delete)
+		if !j.Applied && delMode {
+			continue
+		}
+		db.Jails[i].Applied = !delMode
 		jJail, err := j.toJailObj()
 		checkErr(err)
 		checkErr(s.AddJail(jJail))
