@@ -14,43 +14,43 @@ import (
 // and exit limits it is jailed and bandwidth limiting goes into effect
 // if the exit limit is 0 then the rule will match for everything that
 // goes beyonf the entry limit
-type Bandwidth struct {
+type Size struct {
 	Interface string
 	Match     match.FloorCeil
 	Penalty   penalty.Penalty
 }
 
-func (b Bandwidth) Type() int {
+func (s Size) Type() int {
 	return ConnectionsJail
 }
 
-func (b Bandwidth) GetMatch() match.Match {
-	return b.Match
+func (s Size) GetMatch() match.Match {
+	return s.Match
 }
 
-func (b Bandwidth) GetPenalty() penalty.Penalty {
-	return b.Penalty
+func (s Size) GetPenalty() penalty.Penalty {
+	return s.Penalty
 }
 
-func (b Bandwidth) GetInterface() string {
-	return b.Interface
+func (s Size) GetInterface() string {
+	return s.Interface
 }
 
-func (b Bandwidth) markerIdentifier() string {
-	switch p := b.Penalty.(type) {
+func (s Size) markerIdentifier() string {
+	switch p := s.Penalty.(type) {
 	case penalty.Bandwidth:
 		// currently only bandwidth deals with markers
-		return fmt.Sprintf("bw:bw:%s:%d:%d", b.Interface, p.Rate, p.Ceil)
+		return fmt.Sprintf("bw:bw:%s:%d:%d", s.Interface, p.Rate, p.Ceil)
 	}
 	return ""
 }
 
-func (b Bandwidth) GetMarker() (bool, *markers.Marker) {
+func (s Size) GetMarker() (bool, *markers.Marker) {
 	markersObj := markers.New()
-	return markersObj.Get(b.markerIdentifier())
+	return markersObj.Get(s.markerIdentifier())
 }
 
-func (b Bandwidth) IptablesCmds(delMode bool, marker *markers.Marker) []string {
+func (s Size) IptablesCmds(delMode bool, marker *markers.Marker) []string {
 	cmds := []string{"$IPT"}
 	if delMode {
 		cmds = append(cmds, "-D")
@@ -59,22 +59,22 @@ func (b Bandwidth) IptablesCmds(delMode bool, marker *markers.Marker) []string {
 	}
 	
 	cmds = append(cmds, []string{
-		"OUTPUT", "-i", b.GetInterface(), "-p", "tcp", "-m", "connbytes", "--connbytes",
+		"OUTPUT", "-i", s.GetInterface(), "-p", "tcp", "-m", "connbytes", "--connbytes",
 	}...)
 	
-	if b.Match.Floor != 0 {
-		if b.Match.Ceil != 0 {
-			cmds = append(cmds, fmt.Sprintf("%d:%d", b.Match.Floor, b.Match.Ceil))
+	if s.Match.Floor != 0 {
+		if s.Match.Ceil != 0 {
+			cmds = append(cmds, fmt.Sprintf("%d:%d", s.Match.Floor, s.Match.Ceil))
 		} else {
-			cmds = append(cmds, fmt.Sprintf("%d:", b.Match.Floor))
+			cmds = append(cmds, fmt.Sprintf("%d:", s.Match.Floor))
 		}
 	} else {
-		cmds = append(cmds, fmt.Sprintf(":%d", b.Match.Ceil))
+		cmds = append(cmds, fmt.Sprintf(":%d", s.Match.Ceil))
 	}
 	
 	cmds = append(cmds, []string{"--connbytes-dir", "both", "--connbytes-mode", "bytes", "-j"}...)
 	
-	if b.Penalty.Type() == penalty.DropType {
+	if s.Penalty.Type() == penalty.DropType {
 		cmds = append(cmds, "DROP")
 	} else {
 		cmds = append(cmds, []string{"MARK", "--set-mark", fmt.Sprintf("%d", marker.Value)}...)

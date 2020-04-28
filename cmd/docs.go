@@ -1,8 +1,8 @@
 package cmd
 
 const (
-	GInterface      = `The interface to operate on`
-	GMatchBandwidth = `
+	GInterface = `The interface to operate on`
+	GMatchSize = `
 Match abusers based on bandwidth consumption. The param allows
 for a "floor:ceil"" value where you can match abusers who sit
 within a bandwidth range (useful when adding multiple jails of
@@ -10,8 +10,15 @@ the same type) or you can add a "floor:" value where the ceil
 part is ommited which will target every abuser that are over
 the floor value (useful as a catch-all rule)
 
-Expected params are integers where the value will be suffixed
-with mbit: 100:200 = 100mbit:200mbit
+Expected params are integers where the values represent the
+number of bytes. If you want to punish an abuser who downloaded
+more than 10MB of data you would enter:
+
+--match-size=10000000:
+
+Notice the ":" at the end which denotes this is a catch-all
+rule that matches anything above 10000000 - like a missing
+ceil value.
 `
 	GMatchConnections = `Match abusers by the number of
 connections. The param allows for a "floor:ceil"" value where
@@ -62,7 +69,8 @@ help us identify abusers. Once identified, abusers will be
 punished using the specified penalty.
 
 Currently supported match types:
-    - based on consumed bandwidth
+    - based on download size
+    - (WIP) based on consumed bandwidth
     - based on the number of TCP connections
 
 Currently supported penalty types:

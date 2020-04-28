@@ -18,7 +18,7 @@ type jailProps struct {
 	Applied          bool   `yaml:"applied"`
 	Identifier       string `yaml:"identifier"`
 	Interface        string `yaml:"interface"`
-	MatchBandwidth   string `yaml:"match-bandwidth"`
+	MatchSize        string `yaml:"match-size"`
 	MatchConnections string `yaml:"match-connections"`
 	PenaltyDrop      bool   `yaml:"penalty-drop"`
 	PenaltyBandwidth string `yaml:"penalty-bandwidth"`
@@ -31,7 +31,7 @@ type jailProps struct {
 func (j *jailProps) genId() {
 	j.Identifier = str2md5(fmt.Sprintf("%s:%s:%s:%t:%s",
 		j.Interface,
-		j.MatchBandwidth,
+		j.MatchSize,
 		j.MatchConnections,
 		j.PenaltyDrop,
 		j.PenaltyBandwidth,
@@ -72,12 +72,18 @@ func (j *jailProps) toJailObj() (jail.Jail, error) {
 	}
 	
 	var mFloor, mCeil uint64
-	floorCeil := strings.Split(j.MatchBandwidth, ":")
+	floorCeil := strings.Split(j.MatchSize, ":")
 	if j.MatchConnections != "" {
 		floorCeil = strings.Split(j.MatchConnections, ":")
 	}
 	
-	if j.MatchBandwidth != "" || j.MatchConnections != "" {
+	if len(floorCeil) != 2 {
+		return nil, fmt.Errorf(`
+	floor and ceil values are required; to ommit a ceil value and
+	apply a catch-all rule just place a colon after floor. Ex: 1000:`)
+	}
+	
+	if j.MatchSize != "" || j.MatchConnections != "" {
 		if floorCeil[0] != "" {
 			mFloor, err = strconv.ParseUint(floorCeil[0], 10, 64)
 			if err != nil {
@@ -94,8 +100,8 @@ func (j *jailProps) toJailObj() (jail.Jail, error) {
 	}
 	
 	// now construct the appropriate jail
-	if j.MatchBandwidth != "" {
-		return jail.Bandwidth{
+	if j.MatchSize != "" {
+		return jail.Size{
 			Interface: j.Interface,
 			Match: match.FloorCeil{
 				Floor: uint(mFloor),
@@ -187,7 +193,7 @@ func addInit() {
 		er(err)
 	}
 	addJailCmd.Flags().StringVarP(&newJail.Interface, "interface", "i", mainIf, GInterface)
-	addJailCmd.Flags().StringVar(&newJail.MatchBandwidth, "match-bandwidth", "", GMatchBandwidth)
+	addJailCmd.Flags().StringVar(&newJail.MatchSize, "match-size", "", GMatchSize)
 	addJailCmd.Flags().StringVar(&newJail.MatchConnections, "match-connections", "", GMatchConnections)
 	addJailCmd.Flags().StringVar(&newJail.PenaltyBandwidth, "penalty-bandwidth", "", GPenaltyBandwidth)
 	addJailCmd.Flags().BoolVar(&newJail.PenaltyDrop, "penalty-drop", false, GPenaltyDrop)
