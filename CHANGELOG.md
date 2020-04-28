@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/ciokan/shaper/compare/v1.1.2...v1.2.0) (2020-04-28)
+
+
+### Features
+
+* added version cmd ([f11ff09](https://github.com/ciokan/shaper/commit/f11ff099f88e6ef79daacbc0e34099bb4e1eb70b))
+* whitelist default SSH port ([7c9221c](https://github.com/ciokan/shaper/commit/7c9221c79b13d0fea02ff4f14bd7ab3cb631f5fb))
+
 ### [1.1.2](https://github.com/ciokan/shaper/compare/v1.1.1...v1.1.2) (2020-04-28)
 
 ### [1.1.1](https://github.com/ciokan/shaper/compare/v1.1.0...v1.1.1) (2020-04-28)
