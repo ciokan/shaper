@@ -15,6 +15,7 @@ import (
 )
 
 type jailProps struct {
+	Applied          bool   `yaml:"applied"`
 	Identifier       string `yaml:"identifier"`
 	Interface        string `yaml:"interface"`
 	MatchBandwidth   string `yaml:"match-bandwidth"`
@@ -43,14 +44,21 @@ func (j *jailProps) toJailObj() (jail.Jail, error) {
 	
 	// validations
 	if j.PenaltyBandwidth != "" {
+		var rate, ceil uint64
 		rateCeil := strings.Split(j.PenaltyBandwidth, ":")
-		rate, err := strconv.ParseUint(rateCeil[0], 10, 64)
-		if err != nil {
-			return nil, fmt.Errorf("I was unable to convert penalty rate value: %v", err)
+		
+		if rateCeil[0] != "" {
+			rate, err = strconv.ParseUint(rateCeil[0], 10, 64)
+			if err != nil {
+				return nil, fmt.Errorf("I was unable to convert penalty rate value: %v", err)
+			}
 		}
-		ceil, err := strconv.ParseUint(rateCeil[1], 10, 64)
-		if err != nil {
-			return nil, fmt.Errorf("I was unable to convert penalty ceil value: %v", err)
+		
+		if rateCeil[1] != "" {
+			ceil, err = strconv.ParseUint(rateCeil[1], 10, 64)
+			if err != nil {
+				return nil, fmt.Errorf("I was unable to convert penalty ceil value: %v", err)
+			}
 		}
 		
 		jPenalty = penalty.Bandwidth{
@@ -118,7 +126,7 @@ var (
 		Use:   "jail",
 		Short: GCmdJailShort,
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println("jail")
+			fmt.Println("please call a subcommand")
 		},
 	}
 	

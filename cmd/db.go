@@ -32,7 +32,7 @@ func (db *database) persist() error {
 	if err != nil {
 		return err
 	}
-	return ioutil.WriteFile(CfgFile, d, 0)
+	return ioutil.WriteFile(CfgFile, d, 0600)
 }
 
 func (db *database) jailsYaml() (string, error) {

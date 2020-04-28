@@ -74,11 +74,13 @@ func apply(delMode bool) {
 		checkErr(errors.New("this command requires sudo privileges"))
 	}
 	s := shaper.New()
-	for _, j := range db.Jails {
+	for i, j := range db.Jails {
+		db.Jails[i].Applied = true
 		jJail, err := j.toJailObj()
 		checkErr(err)
 		checkErr(s.AddJail(jJail))
 	}
+	checkErr(db.persist())
 	cfg, err := s.Config(delMode)
 	checkErr(err)
 	checkErr(ioutil.WriteFile(ScriptFile, []byte(cfg), 0))
