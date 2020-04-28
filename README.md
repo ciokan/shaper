@@ -27,23 +27,23 @@ The possible applied penalties are:
 __Scenario__: Identify users that have more than 100 connections open and
 place them into a jail (bucket) where internet speed is capped at `1mbit`:
 
-`./shaper jail add --match-connections=100: --penalty-bandwidth=1`
+`shaper jail add --match-connections=100: --penalty-bandwidth=1`
 
 __Scenario__: Identify users that have more than 100 connections open and
 drop any other connection above that limit:
 
-`./shaper jail add --match-connections=100: --penalty-drop`
+`shaper jail add --match-connections=100: --penalty-drop`
 
 __Scenario__: Identify users performing downloads that have exceeded 10Mb in
  size and place them into a jail (bucket) where internet speed is capped at
   `1mbit`:
   
-`./shaper jail add --match-size=10000000: --penalty-bandwidth=1`
+`shaper jail add --match-size=10000000: --penalty-bandwidth=1`
 
 __Scenario__: Identify users performing downloads that have exceeded 10Mb in
  size and drop their connections:
  
-`./shaper jail add --match-size=10000000: --penalty-drop`
+`shaper jail add --match-size=10000000: --penalty-drop`
 
 ### Good to know
 
