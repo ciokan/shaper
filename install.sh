@@ -72,9 +72,7 @@ install_bin() {
 upgrade_bin() {
 	tmp=$SHAPER_BIN.tmp
 	if install_bin "$tmp"; then
-		asroot "$SHAPER_BIN" uninstall
-		mv "$tmp" "$SHAPER_BIN"
-		asroot "$SHAPER_BIN" install
+		asroot mv -f "$tmp" "$SHAPER_BIN"
 	fi
 	rm -rf "$tmp"
 }
