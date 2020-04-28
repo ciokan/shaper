@@ -7,15 +7,6 @@ main() {
 
 	export shaper_INSTALLER=1
 
-	log_info "OS: $OS"
-	log_info "GOARCH: $GOARCH"
-	log_info "GOOS: $GOOS"
-
-	if [ -z "$OS" ] || [ -z "$GOARCH" ] || [ -z "$GOOS" ]; then
-		log_error "Cannot detect running environment."
-		exit 1
-	fi
-
 	SHAPER_BIN=$(bin_location)
 	LATEST_RELEASE=$(get_release)
 
@@ -209,7 +200,55 @@ detect_goarch() {
 	i386 | i686)
 		echo "386"
 		;;
+	*)
+		log_error "Unsupported GOARCH: $(uname -m)"
+		return 1
+		;;
 	esac
+}
+
+detect_goos() {
+	if [ "$FORCE_GOOS" ]; then
+		echo "$FORCE_GOOS"
+		return 0
+	fi
+	case $(uname -s) in
+	Linux)
+		echo "linux"
+		;;
+	*)
+		log_error "Unsupported GOOS: $(uname -s)"
+		return 1
+		;;
+	esac
+}
+
+detect_os() {
+	if [ "$FORCE_OS" ]; then
+		echo "$FORCE_OS"
+		return 0
+	fi
+	case $(uname -s) in
+	Linux)
+		case $(uname -o) in
+		GNU/Linux)
+			dist=$(
+				. /etc/os-release
+				echo "$ID"
+			)
+			case $dist in
+			debian | ubuntu | elementary | raspbian | centos | fedora | rhel | arch | manjaro | openwrt | clear-linux-os | linuxmint | solus | pop)
+				echo "$dist"
+				return 0
+				;;
+			esac
+			;;
+		esac
+		;;
+	*) ;;
+	esac
+	log_error "Unsupported OS: $(uname -s)"
+	return 1
 }
 
 asroot() {

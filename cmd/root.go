@@ -20,6 +20,10 @@ const (
 )
 
 var (
+	version = "dev"
+)
+
+var (
 	err     error
 	db      *database
 	rootCmd = &cobra.Command{
@@ -63,6 +67,14 @@ var (
 			cfg, err := s.Config(false)
 			checkErr(err)
 			fmt.Println(cfg)
+		},
+	}
+	
+	versionCmd = &cobra.Command{
+		Use:   "version",
+		Short: "Prints shaper version",
+		Run: func(cmd *cobra.Command, args []string) {
+			fmt.Printf("shaper version %s\n", version)
 		},
 	}
 )
@@ -112,6 +124,7 @@ func init() {
 	})
 	
 	rootCmd.AddCommand(jailCmd)
+	rootCmd.AddCommand(versionCmd)
 	rootCmd.AddCommand(inspectCmd)
 	rootCmd.AddCommand(applyCmd)
 	rootCmd.AddCommand(resetCmd)
