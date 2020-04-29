@@ -42,6 +42,8 @@ install() {
 		if [ ! -x "$SHAPER_BIN" ]; then
 			log_error "Installation failed: binary not installed in $SHAPER_BIN"
 			return 1
+		else
+			log_debug "shaper was installed successfully"
 		fi
 	fi
 }
