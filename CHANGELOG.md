@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.1](https://github.com/ciokan/shaper/compare/v1.3.0...v1.3.1) (2020-04-29)
+
+
+### Bug Fixes
+
+* index out of range on penalty when adding jail ([4e63eac](https://github.com/ciokan/shaper/commit/4e63eaccc6416ccc13e76182f17a43c97d05c428))
+
 ## [1.3.0](https://github.com/ciokan/shaper/compare/v1.2.3...v1.3.0) (2020-04-29)
 
 
