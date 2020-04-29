@@ -54,7 +54,7 @@ func (j *jailProps) toJailObj() (jail.Jail, error) {
 			}
 		}
 		
-		if rateCeil[1] != "" {
+		if len(rateCeil) > 1 && rateCeil[1] != "" {
 			ceil, err = strconv.ParseUint(rateCeil[1], 10, 64)
 			if err != nil {
 				return nil, fmt.Errorf("I was unable to convert penalty ceil value: %v", err)
