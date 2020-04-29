@@ -18,11 +18,25 @@ The possible applied penalties are:
 - drop the connection
 - limit bandwidth
 
-### Install
+## Requirements
 
+TC and Iptables and a Linux OS/host.
+
+## Install
+
+#### Using our shell script
+Simple install using our shell script but don't just paste and execute random
+ shell scripts from the internet into your terminal - have a look at it first:
+ https://github.com/ciokan/shaper/blob/master/install.sh
+ 
 `sh -c 'sh -c "$(curl -sL https://raw.githubusercontent.com/ciokan/shaper/master/install.sh)"'`
 
-### Usage
+#### Download from releases page
+Navigate to the [Releases](https://github.com/ciokan/shaper/releases) page
+ and grab the latest version. It's a simple archive with an executable that
+  you can place anywhere in your system. 
+
+## Usage
 
 All/most the `jail` subcommands require an interface parameter `--interface
 `. My examples here omit that parameter for the sake of simplicity. The shaper
