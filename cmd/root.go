@@ -40,6 +40,10 @@ var (
 		Short: GCmdApplyShort,
 		Long:  GCmdApplyLong,
 		Run: func(cmd *cobra.Command, args []string) {
+			// in a barbaric fashion we delete everything that appears to be
+			// applied previously then we apply the whole lot again
+			// @TODO: find ways of applying only the new sets
+			apply(true)
 			apply(false)
 		},
 	}
@@ -49,7 +53,7 @@ var (
 		Short: GCmdResetShort,
 		Long:  GCmdResetLong,
 		Run: func(cmd *cobra.Command, args []string) {
-			apply(false)
+			apply(true)
 		},
 	}
 	
@@ -80,6 +84,7 @@ var (
 )
 
 func apply(delMode bool) {
+	addMode := delMode == false
 	sudo, err := isSudo()
 	checkErr(err)
 	if sudo == false {
@@ -88,21 +93,21 @@ func apply(delMode bool) {
 	s := shaper.New()
 	for i, j := range db.Jails {
 		// do not apply if already applied and we're not deleting
-		if j.Applied && delMode == false {
+		if j.Applied && addMode {
 			continue
 		}
 		// do not delete if it's not applied (nothing to delete)
 		if !j.Applied && delMode {
 			continue
 		}
-		db.Jails[i].Applied = !delMode
+		db.Jails[i].Applied = addMode
 		jJail, err := j.toJailObj()
 		checkErr(err)
 		checkErr(s.AddJail(jJail))
 	}
-	checkErr(db.persist())
 	cfg, err := s.Config(delMode)
 	checkErr(err)
+	checkErr(db.persist())
 	checkErr(ioutil.WriteFile(ScriptFile, []byte(cfg), 0))
 	checkErr(os.Chmod(ScriptFile, 0700))
 	defer checkErr(os.Remove(ScriptFile))
