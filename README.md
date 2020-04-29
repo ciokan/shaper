@@ -24,6 +24,10 @@ The possible applied penalties are:
 
 ### Usage
 
+All/most the `jail` subcommands require an interface parameter `--interface
+`. My examples here omit that parameter for the sake of simplicity. The shaper
+will elect the default public interface if this parameter is ommited.
+
 __Scenario__: Identify users that have more than 100 connections open and
 place them into a jail (bucket) where internet speed is capped at `1mbit`:
 
@@ -46,7 +50,6 @@ __Scenario__: Identify users performing downloads that have exceeded 10Mb in
 `shaper jail add --match-size=10000000: --penalty-drop`
 
 ### Good to know
-
 All values for bandwidth related matches or penalties are translated in `mbit
 `. If you specify a `10` it means `10mbit`
 
