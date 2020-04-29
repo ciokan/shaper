@@ -212,8 +212,6 @@ $TC qdisc add dev {{.Interface}} parent {{.TcClassParentId}}:2 sfq
 $IPT -A PREROUTING -i {{.Interface}} -t mangle -j CONNMARK --restore-mark
 $IPT -A POSTROUTING -i {{.Interface}} -t mangle -m mark ! --mark 0 -j ACCEPT
 $IPT -A POSTROUTING -i {{.Interface}} -t mangle -j CONNMARK --save-mark
-
-$IPT -A OUTPUT -p tcp --sport 22 -j ACCEPT
 {{ end }}
 
 {{.Iptables}}

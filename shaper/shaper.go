@@ -1,9 +1,12 @@
 package shaper
 
 import (
+	"bytes"
+	"encoding/binary"
 	"fmt"
 	"os/exec"
 	"strings"
+	"text/template"
 	
 	"github.com/ciokan/shaper/shaper/jail"
 )
@@ -80,7 +83,41 @@ func (s *Shaper) Config(delMode bool) (string, error) {
 		ifacesScripts = append(ifacesScripts, script)
 	}
 	
-	return fmt.Sprintf(ScriptTemplate, tcExe, iptExe, strings.Join(ifacesScripts, "\n")), nil
+	type scriptTplParams struct {
+		Tc       string
+		Iptables string
+		SshPort  uint16
+		Commands string
+	}
+	
+	sshPort, err := getSshPort()
+	if err != nil {
+		return "", fmt.Errorf("I was unable to determine SSH port: %v", err)
+	}
+	params := scriptTplParams{
+		Tc:       tcExe,
+		Iptables: iptExe,
+		SshPort:  sshPort,
+		Commands: strings.Join(ifacesScripts, "\n"),
+	}
+	t := template.Must(template.New("finalScript").Parse(ScriptTemplate))
+	var tpl bytes.Buffer
+	if err := t.Execute(&tpl, params); err != nil {
+		return "", err
+	}
+	
+	return tpl.String(), nil
+}
+
+func getSshPort() (uint16, error) {
+	out, err := exec.Command("bash", "-c", "echo", "${SSH_CLIENT##* }").Output()
+	if err != nil {
+		return 0, err
+	}
+	if len(strings.TrimSpace(string(out))) == 0 {
+		return 0, nil
+	}
+	return binary.BigEndian.Uint16(out), nil
 }
 
 func which(executable string) (string, error) {
@@ -93,7 +130,10 @@ func which(executable string) (string, error) {
 }
 
 const ScriptTemplate = `#!/bin/sh
-$TC=%s
-$IPT=%s
+$TC={{.Tc}}
+$IPT={{.Iptables}}
 
-%s`
+{{ if .SshPort }}
+$IPT -A OUTPUT -p tcp --sport {{.SshPort}} -j ACCEPT
+{{ end }}
+{{.Commands}}`
