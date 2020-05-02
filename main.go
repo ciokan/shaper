@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/ciokan/shaper/cmd"
+	"log"
 )
 
 var (
@@ -9,5 +10,5 @@ var (
 )
 
 func main() {
-	cmd.Execute(version)
+	log.Fatal(cmd.Execute(version))
 }
