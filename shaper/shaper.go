@@ -130,8 +130,8 @@ func which(executable string) (string, error) {
 }
 
 const ScriptTemplate = `#!/bin/sh
-$TC={{.Tc}}
-$IPT={{.Iptables}}
+TC={{.Tc}}
+IPT={{.Iptables}}
 
 {{ if .SshPort }}
 $IPT -A OUTPUT -p tcp --sport {{.SshPort}} -j ACCEPT
