@@ -190,12 +190,14 @@ func (i *Iface) Script(delMode bool) (string, error) {
 const IfaceScriptTemplate = `
 # {{.Interface}}
 # ---------------------------------------------------------
-$TC qdisc del dev {{.Interface}} root
+# clean existing down- and uplink qdiscs, hide errors
+$TC qdisc del dev {{.Interface}} root    2> /dev/null > /dev/null
+$TC qdisc del dev {{.Interface}} ingress 2> /dev/null > /dev/null
 
 {{ if .DelMode }}
-$IPT -D PREROUTING -i {{.Interface}} -t mangle -j CONNMARK --restore-mark
-$IPT -D POSTROUTING -i {{.Interface}} -t mangle -m mark ! --mark 0 -j ACCEPT
-$IPT -D POSTROUTING -i {{.Interface}} -t mangle -j CONNMARK --save-mark
+$IPT -D PREROUTING -t mangle -j CONNMARK --restore-mark
+$IPT -D POSTROUTING -t mangle -m mark ! --mark 0 -j ACCEPT
+$IPT -D POSTROUTING -t mangle -j CONNMARK --save-mark
 {{ else }}
 $TC qdisc add dev {{.Interface}} root handle {{.TcClassParentId}}: htb default 2
 

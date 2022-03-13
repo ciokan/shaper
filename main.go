@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/ciokan/shaper/cmd"
 	"log"
+
+	"github.com/ciokan/shaper/cmd"
 )
 
 var (

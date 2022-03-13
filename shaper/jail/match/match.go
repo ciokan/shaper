@@ -8,7 +8,7 @@ type Match interface {
 	Type() int
 }
 
-// match that has a range of activation (start stop limits)
+// FloorCeil match that has a range of activation (start stop limits)
 // while both params are optional, only one at a time can be ommited
 type FloorCeil struct {
 	Floor uint

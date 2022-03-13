@@ -6,11 +6,12 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
+	"runtime/debug"
 	"strconv"
 	"strings"
-	
+
 	"github.com/spf13/cobra"
-	
+
 	"github.com/ciokan/shaper/shaper"
 )
 
@@ -34,7 +35,7 @@ var (
 			fmt.Println("root", args)
 		},
 	}
-	
+
 	applyCmd = &cobra.Command{
 		Use:   "apply",
 		Short: GCmdApplyShort,
@@ -47,7 +48,7 @@ var (
 			apply(false)
 		},
 	}
-	
+
 	resetCmd = &cobra.Command{
 		Use:   "reset",
 		Short: GCmdResetShort,
@@ -56,7 +57,7 @@ var (
 			apply(true)
 		},
 	}
-	
+
 	inspectCmd = &cobra.Command{
 		Use:   "inspect",
 		Short: GCmdInspectShort,
@@ -73,7 +74,7 @@ var (
 			fmt.Println(cfg)
 		},
 	}
-	
+
 	versionCmd = &cobra.Command{
 		Use:   "version",
 		Short: "Prints shaper version",
@@ -128,7 +129,7 @@ func init() {
 		db, err = loadDatabase()
 		checkErr(err)
 	})
-	
+
 	rootCmd.AddCommand(jailCmd)
 	rootCmd.AddCommand(versionCmd)
 	rootCmd.AddCommand(inspectCmd)
@@ -144,6 +145,7 @@ func checkErr(err error) {
 
 func er(msg interface{}) {
 	fmt.Println("Error:", msg)
+	debug.PrintStack()
 	os.Exit(1)
 }
 
