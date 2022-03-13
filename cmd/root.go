@@ -112,7 +112,7 @@ func apply(delMode bool) {
 	checkErr(ioutil.WriteFile(ScriptFile, []byte(cfg), 0))
 	checkErr(os.Chmod(ScriptFile, 0700))
 	defer checkErr(os.Remove(ScriptFile))
-	c := exec.Command("sh", ScriptFile)
+	c := exec.Command("/bin/sh", ScriptFile)
 	out, err := c.CombinedOutput()
 	checkErr(err)
 	fmt.Println(strings.TrimSpace(string(out)))

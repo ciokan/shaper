@@ -173,7 +173,7 @@ var (
 			var newJails []*jailProps
 			for _, ex := range db.Jails {
 				if ex.Identifier != newJail.Identifier {
-					logger.Logger.Infof("maintaining jail with id %s", newJail.Identifier)
+					logger.Logger.Infof("maintaining jail with id %s", ex.Identifier)
 					newJails = append(newJails, ex)
 				}
 			}
