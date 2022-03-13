@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.2](https://github.com/ciokan/shaper/compare/v1.3.1...v1.3.2) (2022-03-13)
+
+
+### Bug Fixes
+
+* bash error ([8008432](https://github.com/ciokan/shaper/commit/800843273a83c536626445e8e542eef6f8fe35a0))
+* log entrypoint errors ([0fd037a](https://github.com/ciokan/shaper/commit/0fd037afeb2e27d3f7fa8dd414f4724fcc03cc0e))
+
 ### [1.3.1](https://github.com/ciokan/shaper/compare/v1.3.0...v1.3.1) (2020-04-29)
 
 
