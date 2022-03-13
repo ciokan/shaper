@@ -7,6 +7,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/ciokan/shaper/logger"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 
 	"github.com/ciokan/shaper/shaper"
@@ -142,6 +144,8 @@ var (
 		Short: GCmdJailAddShort,
 		Long:  GCmdJailAddLong,
 		Run: func(cmd *cobra.Command, args []string) {
+			logger.Logger.WithFields(logrus.Fields{"params": newJail}).Infof("adding new jail")
+
 			// validation first
 			jJail, err := newJail.toJailObj()
 			checkErr(err)
@@ -164,9 +168,12 @@ var (
 		Use:   "del",
 		Short: GCmdJailDelShort,
 		Run: func(cmd *cobra.Command, args []string) {
+			logger.Logger.Infof("removing jail with id %s", newJail.Identifier)
+
 			var newJails []*jailProps
 			for _, ex := range db.Jails {
 				if ex.Identifier != newJail.Identifier {
+					logger.Logger.Infof("maintaining jail with id %s", newJail.Identifier)
 					newJails = append(newJails, ex)
 				}
 			}
