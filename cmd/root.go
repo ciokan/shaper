@@ -127,8 +127,8 @@ func apply(delMode bool) {
 	cmd.Stderr = &stderr
 
 	err = cmd.Run()
-	checkErr(err)
 	fmt.Println(strings.TrimSpace(out.String()))
+	checkErr(err)
 }
 
 // Execute executes the root command.
