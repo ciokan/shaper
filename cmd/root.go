@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -118,10 +119,16 @@ func apply(delMode bool) {
 	checkErr(ioutil.WriteFile(ScriptFile, []byte(cfg), 0))
 	checkErr(os.Chmod(ScriptFile, 0700))
 	defer checkErr(os.Remove(ScriptFile))
-	c := exec.Command("sh", "-c", ScriptFile)
-	out, err := c.CombinedOutput()
+	cmd := exec.Command("sh", ScriptFile)
+
+	var out bytes.Buffer
+	var stderr bytes.Buffer
+	cmd.Stdout = &out
+	cmd.Stderr = &stderr
+
+	err = cmd.Run()
 	checkErr(err)
-	fmt.Println(strings.TrimSpace(string(out)))
+	fmt.Println(strings.TrimSpace(out.String()))
 }
 
 // Execute executes the root command.
