@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 	"text/template"
-	
+
 	"github.com/ciokan/shaper/shaper/jail"
 	"github.com/ciokan/shaper/shaper/jail/match"
 	"github.com/ciokan/shaper/shaper/jail/penalty"
@@ -81,10 +81,10 @@ func (i *Iface) validatePenaltyBandwidth(j jail.Jail) error {
 func (i *Iface) validateMatchFloorCeil(j jail.Jail) error {
 	var maxCeil uint
 	newMatch := j.GetMatch().(match.FloorCeil)
-	
+
 	for _, existing := range i.sameTypeJails(j) {
 		exMatch := existing.GetMatch().(match.FloorCeil)
-		
+
 		if exMatch.Ceil == 0 && newMatch.Ceil >= exMatch.Floor {
 			return fmt.Errorf("a catch-all match was found - the new match overlaps it")
 		}
@@ -153,7 +153,7 @@ func (i *Iface) Script(delMode bool) (string, error) {
 		TcClassParentId int
 		DelMode         bool
 	}
-	
+
 	var tcClassCmds, tcQdiskCmds, tcFilterCmds, iptablesCmds []string
 	for _, j := range i.jails {
 		tcCmds, err := i.TcCmds(j)
@@ -168,7 +168,7 @@ func (i *Iface) Script(delMode bool) (string, error) {
 		_, marker := j.GetMarker()
 		iptablesCmds = append(iptablesCmds, j.IptablesCmds(delMode, marker)...)
 	}
-	
+
 	params := scriptParams{
 		Interface:       i.name,
 		TcClassParentId: i.tcClassParentId,
@@ -212,8 +212,8 @@ $TC qdisc add dev {{.Interface}} parent {{.TcClassParentId}}:2 sfq
 {{.TcFilter}}
 
 $IPT -A PREROUTING -i {{.Interface}} -t mangle -j CONNMARK --restore-mark
-$IPT -A POSTROUTING -i {{.Interface}} -t mangle -m mark ! --mark 0 -j ACCEPT
-$IPT -A POSTROUTING -i {{.Interface}} -t mangle -j CONNMARK --save-mark
+$IPT -A POSTROUTING -t mangle -m mark ! --mark 0 -j ACCEPT
+$IPT -A POSTROUTING -t mangle -j CONNMARK --save-mark
 {{ end }}
 
 {{.Iptables}}

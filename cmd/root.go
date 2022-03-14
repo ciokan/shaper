@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/ciokan/shaper/logger"
 	"github.com/spf13/cobra"
 
 	"github.com/ciokan/shaper/shaper"
@@ -91,6 +92,7 @@ func apply(delMode bool) {
 	if sudo == false {
 		checkErr(errors.New("this command requires sudo privileges"))
 	}
+
 	s := shaper.New()
 	for i, j := range db.Jails {
 		// do not apply if already applied and we're not deleting
@@ -106,13 +108,17 @@ func apply(delMode bool) {
 		checkErr(err)
 		checkErr(s.AddJail(jJail))
 	}
+
 	cfg, err := s.Config(delMode)
 	checkErr(err)
+
+	logger.Logger.Infof("saving config file: \n\n%s", cfg)
+
 	checkErr(db.persist())
 	checkErr(ioutil.WriteFile(ScriptFile, []byte(cfg), 0))
 	checkErr(os.Chmod(ScriptFile, 0700))
 	defer checkErr(os.Remove(ScriptFile))
-	c := exec.Command("/bin/sh", ScriptFile)
+	c := exec.Command("sh", "-c", ScriptFile)
 	out, err := c.CombinedOutput()
 	checkErr(err)
 	fmt.Println(strings.TrimSpace(string(out)))
