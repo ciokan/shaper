@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"os/exec"
 	"runtime/debug"
@@ -127,8 +128,10 @@ func apply(delMode bool) {
 	cmd.Stderr = &stderr
 
 	err = cmd.Run()
+	if err != nil {
+		log.Fatal(fmt.Println(fmt.Sprint(err) + ": " + stderr.String()))
+	}
 	fmt.Println(strings.TrimSpace(out.String()))
-	checkErr(err)
 }
 
 // Execute executes the root command.
